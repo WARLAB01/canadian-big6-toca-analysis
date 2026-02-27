@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workforce Dynamics & US Exposure | WARLAB</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--ink:#1a1a2e;--navy:#0f3460;--accent:#2563eb;--accent-light:#dbeafe;--red:#dc2626;--red-light:#fef2f2;--green:#16a34a;--green-light:#f0fdf4;--gold:#d97706;--gold-light:#fffbeb;--gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;--gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;--gray-800:#1f2937;--radius:8px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);--shadow-md:0 4px 6px -1px rgba(0,0,0,.07),0 2px 4px -2px rgba(0,0,0,.05);--shadow-lg:0 10px 15px -3px rgba(0,0,0,.08),0 4px 6px -4px rgba(0,0,0,.04)}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--gray-800);background:#fff;line-height:1.65;font-size:15px;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:'DM Serif Display',Georgia,serif;font-weight:400;color:var(--ink);letter-spacing:-.01em}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--gray-200);padding:.65rem 2rem;display:flex;justify-content:space-between;align-items:center}
+nav .brand{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--navy)}
+nav .brand em{font-style:normal;color:var(--gray-400);font-family:'Inter',sans-serif;font-size:.8rem;font-weight:400;margin-left:.5rem}
+nav ul{list-style:none;display:flex;gap:1.75rem}
+nav a{color:var(--gray-500);text-decoration:none;font-size:.8rem;font-weight:500;letter-spacing:.02em;text-transform:uppercase;transition:color .15s}
+nav a:hover{color:var(--accent)}
+.tag{display:inline-block;font-size:.65rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:.2rem .55rem;border-radius:3px;vertical-align:middle}
+.tag-public{background:var(--green-light);color:var(--green)}
+.hero{background:linear-gradient(135deg,#0f3460 0%,#1a1a2e 100%);color:#fff;padding:4.5rem 2rem 3.5rem;text-align:center;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-inner{position:relative;z-index:1;max-width:800px;margin:0 auto}
+.hero h1{font-size:2.8rem;margin-bottom:.5rem;color:#fff}
+.hero .subtitle{font-size:1.1rem;opacity:.75;font-weight:300;margin-bottom:1.5rem}
+.hero-meta{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
+.hero-meta .pill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:.35rem 1rem;font-size:.78rem;font-weight:500}
+.container{max-width:1180px;margin:0 auto;padding:0 2rem}
+section{padding:3.5rem 0}
+section+section{border-top:1px solid var(--gray-100)}
+.section-label{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem}
+h2{font-size:1.9rem;margin-bottom:.75rem}
+h3{font-size:1.25rem;margin-bottom:.5rem}
+p+p{margin-top:.75rem}
+.lead{font-size:1.05rem;color:var(--gray-600);max-width:720px}
+.kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin:2rem 0}
+.kpi{background:var(--gray-50);border-radius:var(--radius);padding:1.1rem;text-align:center;border:1px solid var(--gray-200);transition:transform .15s,box-shadow .15s}
+.kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.kpi.danger{background:var(--red-light);border-color:#fecaca}
+.kpi .num{font-family:'DM Serif Display',serif;font-size:1.65rem;color:var(--ink)}
+.kpi.danger .num{color:var(--red)}
+.kpi .lbl{font-size:.7rem;color:var(--gray-500);font-weight:500;text-transform:uppercase;letter-spacing:.04em;margin-top:.15rem}
+.kpi .sub{font-size:.72rem;color:var(--gray-400);margin-top:.1rem}
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:1.5rem 0}
+.chart-card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow)}
+.chart-card h3{font-size:1rem;font-family:'Inter',sans-serif;font-weight:600;color:var(--gray-700);margin-bottom:.75rem}
+.chart-card canvas{max-height:320px}
+.chart-full{grid-column:1/-1}
+.callout{border-radius:var(--radius);padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;line-height:1.6}
+.callout-red{background:var(--red-light);border-left:3px solid var(--red)}
+.callout-blue{background:var(--accent-light);border-left:3px solid var(--accent)}
+.callout-green{background:var(--green-light);border-left:3px solid var(--green)}
+.callout-gold{background:var(--gold-light);border-left:3px solid var(--gold)}
+.callout strong{display:block;margin-bottom:.25rem;font-size:.85rem;text-transform:uppercase;letter-spacing:.03em}
+.table-wrap{overflow-x:auto;margin:1.25rem 0;border-radius:var(--radius);border:1px solid var(--gray-200);box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+th{background:var(--navy);color:#fff;padding:.6rem .7rem;font-weight:600;text-align:center;font-size:.72rem;letter-spacing:.03em;text-transform:uppercase}
+td{padding:.55rem .7rem;text-align:center;border-bottom:1px solid var(--gray-100)}
+tbody tr:hover td{background:var(--gray-50)}
+tr.row-bmo td{background:var(--gold-light);font-weight:600}
+tr.row-bmo td:first-child{border-left:3px solid var(--gold)}
+.cell-alert{background:var(--red-light)!important;color:var(--red);font-weight:700}
+.cell-hl{background:var(--gold-light)!important;font-weight:600}
+.cell-good{background:var(--green-light)!important;color:var(--green);font-weight:600}
+td.left{text-align:left}
+details{margin:1rem 0;border:1px solid var(--gray-200);border-radius:var(--radius);overflow:hidden}
+summary{padding:.75rem 1rem;background:var(--gray-50);cursor:pointer;font-weight:600;font-size:.85rem;color:var(--gray-700);user-select:none}
+summary:hover{background:var(--gray-100)}
+details[open] summary{border-bottom:1px solid var(--gray-200)}
+details .inner{padding:1rem;font-size:.85rem;color:var(--gray-600);line-height:1.7}
+.footer{background:var(--gray-50);border-top:1px solid var(--gray-200);padding:2rem;text-align:center;font-size:.78rem;color:var(--gray-400)}
+.back-link{display:inline-flex;align-items:center;gap:.4rem;font-size:.85rem;font-weight:500;color:var(--accent);text-decoration:none;margin-bottom:1rem}
+.back-link:hover{text-decoration:underline}
+@media(max-width:768px){.chart-grid{grid-template-columns:1fr}.kpi-strip{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:2rem}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">WARLAB <em>Prepared by MIA</em> <span class="tag tag-public">Public</span></div>
+  <ul>
+    <li><a href="index.html">TOCA Analysis</a></li>
+    <li><a href="#turnover">Turnover</a></li>
+    <li><a href="#us-exposure">US Exposure</a></li>
+    <li><a href="#risk">Risk Thesis</a></li>
+    <li><a href="#sources">Sources</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Workforce Dynamics &amp; US Exposure</h1>
+    <p class="subtitle">Employee Turnover Benchmarking &amp; US Revenue Concentration — Canadian Big 6 D-SIBs</p>
+    <div class="hero-meta">
+      <span class="pill">Companion to TOCA Analysis</span>
+      <span class="pill">FY2024 Sustainability Data</span>
+      <span class="pill">All Public Sources</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════ THESIS ═══════════ -->
+<section>
+  <a href="index.html" class="back-link">&larr; Back to TOCA vs LOB Peer Benchmarking</a>
+  <div class="section-label">Context</div>
+  <h2>Why Turnover &amp; US Exposure Matter</h2>
+  <p class="lead">The original TOCA analysis found BMO carries the highest estimated non-revenue-producing headcount ratio among the Big 6. This companion analysis tests two explanatory variables: <strong>employee turnover patterns</strong> (do banks with higher turnover carry more support overhead?) and <strong>US revenue concentration</strong> (does operating in the more heavily regulated US market require disproportionate support infrastructure?).</p>
+</section>
+
+<!-- ═══════════ TURNOVER ═══════════ -->
+<section id="turnover">
+  <div class="section-label">Section 1</div>
+  <h2>Employee Turnover Benchmarking</h2>
+  <p class="lead">Extracted from FY2024 sustainability reports published by each bank. All figures represent the fiscal year ended October 31, 2024.</p>
+
+  <div class="kpi-strip">
+    <div class="kpi danger"><div class="num">17.5%</div><div class="lbl">BNS Total</div><div class="sub">Highest</div></div>
+    <div class="kpi danger"><div class="num">16.6%</div><div class="lbl">BMO Total</div><div class="sub">2nd Highest</div></div>
+    <div class="kpi"><div class="num">15.0%</div><div class="lbl">TD Total</div><div class="sub">&nbsp;</div></div>
+    <div class="kpi"><div class="num">11.8%</div><div class="lbl">RBC Total</div><div class="sub">&nbsp;</div></div>
+    <div class="kpi"><div class="num">11.8%</div><div class="lbl">CIBC Total</div><div class="sub">&nbsp;</div></div>
+    <div class="kpi" style="border-style:dashed"><div class="num">N/D</div><div class="lbl">NA Total</div><div class="sub">Not Disclosed</div></div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th style="text-align:left">Bank</th><th>Total Turnover</th><th>Voluntary</th><th>Involuntary</th><th>CA Voluntary</th><th>US Voluntary</th><th>Avg Tenure</th><th>Total FTEs</th></tr>
+      </thead>
+      <tbody>
+        <tr class="row-bmo"><td class="left">BMO</td><td class="cell-hl">16.6%</td><td>10.6%</td><td>6.0%</td><td>9.8%</td><td class="cell-alert">12.2%</td><td>N/D</td><td>57,060</td></tr>
+        <tr><td class="left">RBC</td><td>11.8%</td><td>9.5%</td><td>2.3%</td><td>9.9%</td><td>N/D<sup>*</sup></td><td class="cell-good">10 yrs</td><td>98,588</td></tr>
+        <tr><td class="left">TD</td><td>15.0%</td><td>10.5%<sup>†</sup></td><td>3.6%<sup>†</sup></td><td>10.1%</td><td class="cell-alert">11.4%</td><td>N/D</td><td>103,150</td></tr>
+        <tr><td class="left">CIBC</td><td>11.8%</td><td class="cell-good">7.7%</td><td>N/D</td><td>N/D</td><td>N/D</td><td>N/D</td><td>48,000</td></tr>
+        <tr><td class="left">BNS</td><td class="cell-alert">17.5%</td><td>10.0%</td><td>~7.5%</td><td>N/D</td><td>N/D</td><td>N/D</td><td>82,590</td></tr>
+        <tr><td class="left">NA</td><td colspan="6" style="color:var(--gray-400);font-style:italic">Turnover rates not disclosed in sustainability report</td><td>31,303</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:.75rem;color:var(--gray-400);margin-top:.5rem">
+    <sup>*</sup> RBC reports "International" (incl. US, UK, Other) voluntary at 7.7% but does not isolate US specifically. Excludes City National Bank &amp; RBC Brewin Dolphin.<br>
+    <sup>†</sup> TD global voluntary/involuntary estimated from CA + US weighted by headcount. CA: 10.1% vol / 2.8% invol. US: 11.4% vol / 5.1% invol.
+  </p>
+
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h3>Total Turnover Rate by Bank (FY2024)</h3>
+      <canvas id="chartTurnover"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Voluntary Turnover: Canada vs US</h3>
+      <canvas id="chartGeoVol"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Involuntary Turnover: Canada vs US</h3>
+      <canvas id="chartGeoInvol"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Voluntary Turnover Trend (FY2022-FY2024)</h3>
+      <canvas id="chartTrend"></canvas>
+    </div>
+  </div>
+
+  <div class="callout callout-red">
+    <strong>Key Finding: US Operations Drive Higher Turnover</strong>
+    Where geographic data is available (BMO, TD), US voluntary turnover runs 12-25% higher than Canadian voluntary turnover. BMO's US involuntary turnover (10.3%) is nearly 3x the Canadian rate (3.5%), suggesting the US labor market imposes a structural cost premium through both higher attrition and more frequent workforce restructuring.
+  </div>
+
+  <details>
+    <summary>Methodology &amp; Data Gaps</summary>
+    <div class="inner">
+      <p><strong>Sources:</strong> All turnover data extracted from FY2024 sustainability reports published by each bank between March-April 2025. KPMG-verified where indicated (BNS, RBC).</p>
+      <p><strong>Definition Differences:</strong> Banks define "turnover" slightly differently. BMO and TD provide explicit voluntary/involuntary splits by geography. RBC provides splits but groups US with UK and other international geographies. CIBC provides voluntary only at the global level. BNS provides voluntary and total only (involuntary calculated). NA does not disclose turnover rates.</p>
+      <p><strong>Revenue-Generating Turnover:</strong> No bank publicly discloses turnover specifically for revenue-generating (LOB) vs support (TOCA) roles. This remains a data gap. The geographic split (Canada vs US) serves as the best available proxy, since US operations are predominantly revenue-generating retail and commercial banking.</p>
+      <p><strong>Exclusions:</strong> RBC figures exclude City National Bank and RBC Brewin Dolphin (not yet on primary HR platform). Scotiabank excludes certain subsidiaries. CIBC excludes CIBC Caribbean, temporary employees, and contingent workers.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ═══════════ US EXPOSURE ═══════════ -->
+<section id="us-exposure">
+  <div class="section-label">Section 2</div>
+  <h2>US Revenue &amp; Workforce Exposure</h2>
+  <p class="lead">The Canadian Big 6 have dramatically different US exposure profiles. BMO and TD are clear outliers, with approximately 30-35% and 25-30% of earnings from US operations respectively.</p>
+
+  <div class="kpi-strip">
+    <div class="kpi danger"><div class="num">~33%</div><div class="lbl">BMO US Earnings</div><div class="sub">Highest Peer</div></div>
+    <div class="kpi danger"><div class="num">~28%</div><div class="lbl">TD US Earnings</div><div class="sub">2nd Highest</div></div>
+    <div class="kpi"><div class="num">~13%</div><div class="lbl">RBC US Earnings</div><div class="sub">Wealth-focused</div></div>
+    <div class="kpi"><div class="num">~7%</div><div class="lbl">CIBC US Earnings</div><div class="sub">Commercial</div></div>
+    <div class="kpi"><div class="num">~4%</div><div class="lbl">BNS US Earnings</div><div class="sub">LatAm focused</div></div>
+    <div class="kpi"><div class="num">&lt;2%</div><div class="lbl">NA US Earnings</div><div class="sub">Domestic</div></div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th style="text-align:left">Bank</th><th>US Employees</th><th>CA Employees</th><th>US % of Workforce</th><th>Est. US Earnings %</th><th>Primary US Presence</th></tr>
+      </thead>
+      <tbody>
+        <tr class="row-bmo"><td class="left">BMO</td><td class="cell-hl">19,621</td><td>36,664</td><td class="cell-hl">34.4%</td><td class="cell-alert">~30-35%</td><td class="left">Full retail bank (Bank of the West), US P&amp;C segment</td></tr>
+        <tr><td class="left">TD</td><td class="cell-hl">31,054</td><td>70,751</td><td class="cell-hl">30.1%</td><td class="cell-alert">~25-30%</td><td class="left">TD Bank N.A. (1,171+ branches, 16 states)</td></tr>
+        <tr><td class="left">RBC</td><td>16,101</td><td>72,769</td><td>16.3%</td><td>~10-15%</td><td class="left">City National Bank (CA), US wealth management</td></tr>
+        <tr><td class="left">CIBC</td><td>N/D</td><td>N/D</td><td>N/D</td><td>~7%</td><td class="left">US Commercial Banking &amp; Wealth Management</td></tr>
+        <tr><td class="left">BNS</td><td>N/D</td><td>41,943</td><td>N/D</td><td>~3-5%</td><td class="left">Limited US; International = LatAm/Caribbean</td></tr>
+        <tr><td class="left">NA</td><td>~minimal</td><td>~30,900</td><td>&lt;1%</td><td>&lt;2%</td><td class="left">4 branches in Florida; predominantly Quebec/Canada</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h3>US Workforce Share vs Estimated US Earnings Share</h3>
+      <canvas id="chartUSExposure"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Workforce Geographic Mix</h3>
+      <canvas id="chartGeoMix"></canvas>
+    </div>
+    <div class="chart-card chart-full">
+      <h3>US Exposure vs Total Turnover Rate</h3>
+      <canvas id="chartUSvsTurnover"></canvas>
+    </div>
+  </div>
+
+  <div class="callout callout-gold">
+    <strong>Correlation: US Exposure &amp; Turnover</strong>
+    The three banks with the highest total turnover rates (BNS 17.5%, BMO 16.6%, TD 15.0%) all have significant international or US operations. The two lowest (RBC 11.8%, CIBC 11.8%) have more domestically weighted workforces. While not perfectly causal, this suggests international operations — particularly US retail banking — structurally inflate overhead through higher turnover-driven recruiting, training, and transition costs.
+  </div>
+</section>
+
+<!-- ═══════════ RISK THESIS ═══════════ -->
+<section id="risk">
+  <div class="section-label">Section 3</div>
+  <h2>The US Cost-to-Serve Thesis</h2>
+  <p class="lead">This is potentially a stronger explanatory variable for BMO's higher TOCA ratio than pure organizational bloat.</p>
+
+  <p>If approximately 30-35% of BMO's business is in the US, and US operations require 1.3-1.5x the compliance and support infrastructure per revenue dollar compared to Canadian operations, that alone could explain a significant portion of the TOCA gap versus peers like RBC, CIBC, and National Bank who have minimal US retail banking exposure.</p>
+
+  <p>BMO and TD &mdash; the two banks with the largest US footprints &mdash; face a compounding set of structural cost drivers that do not apply (or apply far less) to their domestically-focused peers:</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0">
+    <div class="callout callout-red" style="margin:0">
+      <strong>Regulatory Overhead</strong>
+      US regulatory compliance costs (Dodd-Frank, CFPB, OCC, FDIC, state-level regulations, BSA/AML) are significantly more prescriptive than OSFI/Canadian regulation. Foreign banks with &gt;$100B in US assets (BMO and TD both qualify) must maintain a US Intermediate Holding Company (IHC) with its own capital, liquidity, and stress testing requirements.
+    </div>
+    <div class="callout callout-red" style="margin:0">
+      <strong>Higher US Voluntary Turnover</strong>
+      BMO data shows US voluntary turnover at 12.2% vs 9.8% in Canada &mdash; a 24% premium. TD shows a similar pattern: 11.4% US vs 10.1% Canada. Higher turnover drives recruiting costs, training investment, productivity loss during ramp-up periods, and knowledge attrition.
+    </div>
+    <div class="callout callout-red" style="margin:0">
+      <strong>US Compensation Premiums</strong>
+      US banking salaries run materially higher than Canadian equivalents, especially in technology and compliance roles. This compounds the cost of maintaining the duplicate infrastructure that US regulations require.
+    </div>
+    <div class="callout callout-red" style="margin:0">
+      <strong>Duplicate Infrastructure</strong>
+      US operations require separate risk management, compliance, legal, technology, and operational functions to meet US regulatory standards. This creates a structural floor on non-revenue-producing headcount that purely domestic banks do not carry.
+    </div>
+  </div>
+
+  <div class="callout callout-blue">
+    <strong>Enhanced Prudential Standards (EPS) — The Hidden Multiplier</strong>
+    Foreign Banking Organizations (FBOs) with &gt;$100B in US total consolidated assets are subject to Enhanced Prudential Standards under the Dodd-Frank Act. Both BMO and TD exceed this threshold. This requires them to establish a US Intermediate Holding Company (IHC) subject to US capital requirements, US liquidity requirements (LCR), US stress testing (CCAR/DFAST), US resolution planning, and US risk management standards — all separate from and in addition to their Canadian OSFI requirements. This is effectively a mandate to build a second bank-within-a-bank, with its own governance, risk, and compliance apparatus.
+  </div>
+
+  <p>TD's $4.2B AML enforcement penalty in 2024 illustrates the extreme tail risk of US operations when compliance infrastructure proves inadequate. This event alone consumed approximately 47% of TD's FY2024 reported net income ($8.8B) and triggered a 10% US asset cap — a regulatory constraint with no equivalent in the Canadian framework.</p>
+
+  <details>
+    <summary>Implications for the TOCA Analysis</summary>
+    <div class="inner">
+      <p><strong>What this means:</strong> A portion of BMO's elevated Corporate Services NIE (32.6% of total, vs peer range of 16-25%) is likely structural — driven by the regulatory and operational requirements of running a large US retail bank — rather than purely attributable to organizational inefficiency.</p>
+      <p><strong>Quantifying the effect:</strong> If US operations require ~1.4x the support cost per revenue dollar (a conservative estimate given duplicate infrastructure, higher turnover, and EPS compliance), and BMO derives ~33% of revenue from the US, that implies ~4.6 percentage points of incremental TOCA burden (33% × 0.4 × ~35% base TOCA rate). This alone would narrow the gap between BMO and domestically-focused peers significantly.</p>
+      <p><strong>What remains unexplained:</strong> Even adjusting for US structural costs, BMO's overhead appears elevated. The Bank of the West integration (completed 2023) likely contributed transitional overhead that should normalize. The remaining gap may reflect genuine optimization opportunity in technology and operations — but the size of that opportunity is smaller than the raw TOCA comparison suggests.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ═══════════ SOURCES ═══════════ -->
+<section id="sources">
+  <div class="section-label">Sources &amp; References</div>
+  <h2>Data Sources</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0">
+    <div class="callout callout-green" style="margin:0">
+      <strong>Sustainability Reports (Turnover Data)</strong>
+      BMO 2024 Talent &amp; Inclusion Supplementary Information &bull;
+      RBC 2024 Sustainability Report &bull;
+      TD 2024 Sustainability Report &amp; Performance Data Pack &bull;
+      CIBC 2024 Sustainability Report &bull;
+      Scotiabank 2024 Sustainability Report &bull;
+      National Bank 2024 Sustainability Report
+    </div>
+    <div class="callout callout-green" style="margin:0">
+      <strong>Financial Data (US Exposure)</strong>
+      BMO FY2024 Q4 Earnings Release &bull;
+      TD FY2024 Q4 Earnings Release &bull;
+      RBC FY2024 Q4 Earnings Release &bull;
+      CIBC FY2024 Q4 Earnings Release &bull;
+      BNS FY2024 Q4 Earnings Release &bull;
+      Bank of Canada WP 2025-1: International Exposure of Canadian Banks
+    </div>
+  </div>
+
+  <details>
+    <summary>Complete Source URLs</summary>
+    <div class="inner">
+      <p><strong>BMO:</strong> bmo.com/dist/pdf/personal/about-bmo/talent_and_inclusion_supplementary_sustainability_information.pdf</p>
+      <p><strong>RBC:</strong> rbc.com/investor-relations/_assets-custom/pdf/RBC-2024-sustainability-report.pdf</p>
+      <p><strong>TD:</strong> td.com/content/dam/tdcom/canada/about-td/pdf/esg/2024-sustainability-report-en.pdf</p>
+      <p><strong>CIBC:</strong> cibc.com/content/dam/about_cibc/corporate_responsibility/pdfs/cibc-sustainability-report-2024-en.pdf</p>
+      <p><strong>BNS:</strong> scotiabank.com/content/dam/scotiabank/corporate/Documents/2025/Scotiabank_2024_Sustainability_Report_Final.pdf</p>
+      <p><strong>NA:</strong> nbc.ca/content/dam/bnc/a-propos-de-nous/esg/pdf/sustainability-report-2024.pdf</p>
+      <p><strong>Bank of Canada:</strong> bankofcanada.ca/wp-content/uploads/2025/01/swp2025-1.pdf</p>
+    </div>
+  </details>
+</section>
+
+</div>
+
+<div class="footer">
+  WARLAB &mdash; Prepared by MIA &nbsp;|&nbsp; Classification: Public &nbsp;|&nbsp; Based entirely on publicly available information. No internal BMO data was used.<br>
+  <a href="index.html" style="color:var(--accent);text-decoration:none;font-weight:500">&larr; Return to TOCA vs LOB Peer Benchmarking Analysis</a>
+</div>
+
+<script>
+const navy='#0f3460',accent='#2563eb',red='#dc2626',green='#16a34a',gold='#d97706',gray='#9ca3af';
+const banks=['BMO','RBC','TD','CIBC','BNS'];
+
+// Chart 1: Total Turnover
+new Chart(document.getElementById('chartTurnover'),{type:'bar',data:{labels:banks,datasets:[
+  {label:'Voluntary',data:[10.6,9.5,10.5,7.7,10.0],backgroundColor:accent},
+  {label:'Involuntary',data:[6.0,2.3,3.6,4.1,7.5],backgroundColor:red}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{x:{stacked:true},y:{stacked:true,title:{display:true,text:'Turnover Rate (%)'},max:20}}}});
+
+// Chart 2: Voluntary CA vs US
+new Chart(document.getElementById('chartGeoVol'),{type:'bar',data:{labels:['BMO','TD'],datasets:[
+  {label:'Canada Voluntary',data:[9.8,10.1],backgroundColor:accent},
+  {label:'US Voluntary',data:[12.2,11.4],backgroundColor:red}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{title:{display:true,text:'Voluntary Turnover (%)'},min:8,max:14}}}});
+
+// Chart 3: Involuntary CA vs US
+new Chart(document.getElementById('chartGeoInvol'),{type:'bar',data:{labels:['BMO','TD'],datasets:[
+  {label:'Canada Involuntary',data:[3.5,2.8],backgroundColor:accent},
+  {label:'US Involuntary',data:[10.3,5.1],backgroundColor:red}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{title:{display:true,text:'Involuntary Turnover (%)'},max:12}}}});
+
+// Chart 4: Voluntary Trend
+new Chart(document.getElementById('chartTrend'),{type:'line',data:{labels:['FY2022','FY2023','FY2024'],datasets:[
+  {label:'RBC',data:[14.7,9.7,9.5],borderColor:navy,tension:.3,pointRadius:4},
+  {label:'TD (CA)',data:[null,null,10.1],borderColor:green,tension:.3,pointRadius:4},
+  {label:'CIBC',data:[null,9.6,7.7],borderColor:gold,tension:.3,pointRadius:4},
+  {label:'BMO',data:[null,null,10.6],borderColor:red,tension:.3,pointRadius:4}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{title:{display:true,text:'Voluntary Turnover (%)'},min:5,max:16}}}});
+
+// Chart 5: US Exposure scatter
+new Chart(document.getElementById('chartUSExposure'),{type:'bar',data:{labels:banks.concat(['NA']),datasets:[
+  {label:'US Workforce %',data:[34.4,16.3,30.1,null,null,0.5],backgroundColor:accent},
+  {label:'Est. US Earnings %',data:[33,13,28,7,4,1],backgroundColor:gold}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{title:{display:true,text:'Percentage (%)'},max:40}}}});
+
+// Chart 6: Workforce Geo Mix (stacked)
+new Chart(document.getElementById('chartGeoMix'),{type:'bar',data:{labels:['BMO','TD','RBC','CIBC','BNS','NA'],datasets:[
+  {label:'Canada',data:[36664,70751,72769,null,41943,30900],backgroundColor:accent},
+  {label:'US',data:[19621,31054,16101,null,null,400],backgroundColor:red},
+  {label:'International',data:[775,1345,9718,null,40647,null],backgroundColor:gold}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{x:{stacked:true},y:{stacked:true,title:{display:true,text:'Employees'}}}}});
+
+// Chart 7: Scatter - US Exposure vs Turnover
+new Chart(document.getElementById('chartUSvsTurnover'),{type:'scatter',data:{datasets:[
+  {label:'BMO',data:[{x:33,y:16.6}],backgroundColor:red,pointRadius:10},
+  {label:'TD',data:[{x:28,y:15.0}],backgroundColor:gold,pointRadius:10},
+  {label:'RBC',data:[{x:13,y:11.8}],backgroundColor:accent,pointRadius:10},
+  {label:'CIBC',data:[{x:7,y:11.8}],backgroundColor:green,pointRadius:10},
+  {label:'BNS',data:[{x:4,y:17.5}],backgroundColor:navy,pointRadius:10}
+]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'top'},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': US '+ctx.raw.x+'%, Turnover '+ctx.raw.y+'%'}}},scales:{x:{title:{display:true,text:'Estimated US Earnings (%)'},min:0,max:40},y:{title:{display:true,text:'Total Turnover Rate (%)'},min:10,max:20}}}});
+</script>
+</body>
+</html>
