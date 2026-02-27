@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BMO Workforce Analytics Research Briefing | WARLAB</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--ink:#1a1a2e;--navy:#0f3460;--accent:#2563eb;--accent-light:#dbeafe;--red:#dc2626;--red-light:#fef2f2;--green:#16a34a;--green-light:#f0fdf4;--gold:#d97706;--gold-light:#fffbeb;--gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;--gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;--gray-800:#1f2937;--radius:8px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);--shadow-md:0 4px 6px -1px rgba(0,0,0,.07),0 2px 4px -2px rgba(0,0,0,.05);--shadow-lg:0 10px 15px -3px rgba(0,0,0,.08),0 4px 6px -4px rgba(0,0,0,.04)}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--gray-800);background:#fff;line-height:1.65;font-size:15px;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:'DM Serif Display',Georgia,serif;font-weight:400;color:var(--ink);letter-spacing:-.01em}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--gray-200);padding:.65rem 2rem;display:flex;justify-content:space-between;align-items:center}
+nav .brand{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--navy)}
+nav .brand em{font-style:normal;color:var(--gray-400);font-family:'Inter',sans-serif;font-size:.8rem;font-weight:400;margin-left:.5rem}
+nav ul{list-style:none;display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap}
+nav a{color:var(--gray-500);text-decoration:none;font-size:.75rem;font-weight:500;letter-spacing:.02em;text-transform:uppercase;transition:color .15s}
+nav a:hover{color:var(--accent)}
+.tag{display:inline-block;font-size:.65rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:.2rem .55rem;border-radius:3px;vertical-align:middle}
+.tag-public{background:var(--green-light);color:var(--green)}
+.tag-draft{background:var(--gold-light);color:var(--gold)}
+.hero{background:linear-gradient(135deg,#0f3460 0%,#1a1a2e 100%);color:#fff;padding:4.5rem 2rem 3.5rem;text-align:center;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-inner{position:relative;z-index:1;max-width:800px;margin:0 auto}
+.hero h1{font-size:2.6rem;margin-bottom:.5rem;color:#fff}
+.hero .subtitle{font-size:1.05rem;opacity:.75;font-weight:300;margin-bottom:1.5rem}
+.hero-meta{display:flex;justify-content:center;gap:.75rem;flex-wrap:wrap}
+.hero-meta .pill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:.35rem 1rem;font-size:.78rem;font-weight:500}
+.container{max-width:1180px;margin:0 auto;padding:0 2rem}
+section{padding:3.5rem 0}
+section+section{border-top:1px solid var(--gray-100)}
+.section-label{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem}
+h2{font-size:1.9rem;margin-bottom:.75rem}
+h3{font-size:1.25rem;margin-bottom:.5rem}
+p+p{margin-top:.75rem}
+.lead{font-size:1.05rem;color:var(--gray-600);max-width:720px}
+.kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin:2rem 0}
+.kpi{background:var(--gray-50);border-radius:var(--radius);padding:1.1rem;text-align:center;border:1px solid var(--gray-200);transition:transform .15s,box-shadow .15s}
+.kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.kpi.danger{background:var(--red-light);border-color:#fecaca}
+.kpi .num{font-family:'DM Serif Display',serif;font-size:1.65rem;color:var(--ink)}
+.kpi.danger .num{color:var(--red)}
+.kpi .lbl{font-size:.7rem;color:var(--gray-500);font-weight:500;text-transform:uppercase;letter-spacing:.04em;margin-top:.15rem}
+.kpi .sub{font-size:.72rem;color:var(--gray-400);margin-top:.1rem}
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:1.5rem 0}
+.chart-card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow)}
+.chart-card h3{font-size:1rem;font-family:'Inter',sans-serif;font-weight:600;color:var(--gray-700);margin-bottom:.75rem}
+.chart-card canvas{max-height:320px}
+.chart-full{grid-column:1/-1}
+.callout{border-radius:var(--radius);padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;line-height:1.6}
+.callout-red{background:var(--red-light);border-left:3px solid var(--red)}
+.callout-blue{background:var(--accent-light);border-left:3px solid var(--accent)}
+.callout-green{background:var(--green-light);border-left:3px solid var(--green)}
+.callout-gold{background:var(--gold-light);border-left:3px solid var(--gold)}
+.callout strong{display:block;margin-bottom:.25rem;font-size:.85rem;text-transform:uppercase;letter-spacing:.03em}
+.table-wrap{overflow-x:auto;margin:1.25rem 0;border-radius:var(--radius);border:1px solid var(--gray-200);box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+th{background:var(--navy);color:#fff;padding:.6rem .7rem;font-weight:600;text-align:center;font-size:.72rem;letter-spacing:.03em;text-transform:uppercase}
+td{padding:.55rem .7rem;text-align:center;border-bottom:1px solid var(--gray-100)}
+tbody tr:hover td{background:var(--gray-50)}
+tr.row-bmo td{background:var(--green-light);font-weight:600}
+tr.row-bmo td:first-child{border-left:3px solid var(--green)}
+.cell-alert{background:var(--red-light)!important;color:var(--red);font-weight:700}
+.cell-hl{background:var(--gold-light)!important;font-weight:600}
+.cell-good{background:var(--green-light)!important;color:var(--green);font-weight:600}
+td.left{text-align:left}
+.quad-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0}
+details{margin:1rem 0;border:1px solid var(--gray-200);border-radius:var(--radius);overflow:hidden}
+summary{padding:.75rem 1rem;background:var(--gray-50);cursor:pointer;font-weight:600;font-size:.85rem;color:var(--gray-700);user-select:none}
+summary:hover{background:var(--gray-100)}
+details[open] summary{border-bottom:1px solid var(--gray-200)}
+details .inner{padding:1rem;font-size:.85rem;color:var(--gray-600);line-height:1.7}
+.method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1.5rem 0}
+.method{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow)}
+.method .step{display:inline-block;background:var(--accent);color:#fff;font-size:.65rem;font-weight:700;width:22px;height:22px;line-height:22px;text-align:center;border-radius:50%;margin-bottom:.5rem}
+.method h4{font-family:'Inter',sans-serif;font-weight:600;font-size:.92rem;margin-bottom:.4rem}
+.method p{font-size:.82rem;color:var(--gray-600);line-height:1.55}
+.formula{background:var(--gray-50);border:1px solid var(--gray-200);padding:.6rem .8rem;border-radius:6px;font-family:'SF Mono','Fira Code',monospace;font-size:.78rem;color:var(--navy);margin:.5rem 0;line-height:1.5}
+.hypothesis-list{counter-reset:hyp;list-style:none;margin:1.5rem 0;padding:0}
+.hypothesis-list li{counter-increment:hyp;padding:1rem 1.25rem 1rem 3.5rem;border:1px solid var(--gray-200);border-radius:var(--radius);margin-bottom:.75rem;position:relative;background:#fff;box-shadow:var(--shadow);font-size:.9rem;line-height:1.6}
+.hypothesis-list li::before{content:counter(hyp);position:absolute;left:1rem;top:1rem;width:28px;height:28px;background:var(--accent);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem}
+.hypothesis-list li strong{color:var(--ink)}
+.source-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:1rem 0}
+.source-item{display:flex;align-items:flex-start;gap:.5rem;padding:.5rem .65rem;border-radius:6px;border:1px solid var(--gray-100);font-size:.8rem;transition:background .1s}
+.source-item:hover{background:var(--gray-50)}
+.source-item .bank{flex-shrink:0;background:var(--navy);color:#fff;padding:.1rem .45rem;border-radius:3px;font-size:.65rem;font-weight:700;min-width:32px;text-align:center}
+.source-item a{color:var(--accent);text-decoration:none}
+.source-item a:hover{text-decoration:underline}
+.doc-cards{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0}
+.doc-card{display:flex;align-items:center;gap:1rem;padding:1.25rem;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius);transition:box-shadow .15s,transform .15s;text-decoration:none;color:inherit}
+.doc-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.doc-icon{width:48px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;flex-shrink:0}
+.doc-icon.docx{background:#2b579a;color:#fff}
+.doc-icon.xlsx{background:#217346;color:#fff}
+.doc-icon.html-i{background:#e44d26;color:#fff}
+.doc-card .doc-info .name{font-weight:600;font-size:.9rem;color:var(--ink)}
+.doc-card .doc-info .desc{font-size:.75rem;color:var(--gray-500);margin-top:.15rem}
+footer{background:var(--gray-800);color:rgba(255,255,255,.6);padding:2rem;text-align:center;font-size:.78rem}
+footer strong{color:rgba(255,255,255,.9)}
+@media(max-width:900px){.kpi-strip{grid-template-columns:repeat(3,1fr)}.chart-grid,.method-grid,.doc-cards,.source-grid,.quad-grid{grid-template-columns:1fr}nav ul{display:none}.hero h1{font-size:2rem}}
+@media(max-width:600px){.kpi-strip{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">WARLAB <em>Prepared by MIA <span class="tag tag-public">Public</span></em></div>
+  <ul>
+    <li><a href="#executive">Summary</a></li>
+    <li><a href="#financial">Financials</a></li>
+    <li><a href="#toca">TOCA</a></li>
+    <li><a href="#turnover">Turnover</a></li>
+    <li><a href="#us-exposure">US Exposure</a></li>
+    <li><a href="#efficiency">Efficiency</a></li>
+    <li><a href="#digital">Digital</a></li>
+    <li><a href="#hypotheses">Hypotheses</a></li>
+    <li><a href="#sources">Sources</a></li>
+    <li style="margin-left:auto"><a href="index.html" style="color:var(--gray-400);font-size:.7rem">Original TOCA &rarr;</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h1>BMO Workforce Analytics Briefing</h1>
+    <p class="subtitle">Workforce-Related Factors Potentially Contributing to BMO&rsquo;s Revenue Growth Gap vs. Canadian Peer Group</p>
+    <div class="hero-meta">
+      <span class="pill">Enterprise Workforce Analytics &mdash; PeCU</span>
+      <span class="pill">Publicly Available Data Only</span>
+      <span class="pill">February 2026</span>
+      <span class="pill">Classification: Public</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════ 1. EXECUTIVE SUMMARY ═══════════ -->
+<section id="executive">
+  <div class="section-label">Executive Summary</div>
+  <h2>The ROE Conversion Gap</h2>
+  <p class="lead">BMO delivered adjusted revenue growth of approximately 12% in fiscal 2025 and reported record revenue across all segments in Q1 2026. Yet its return on equity (ROE) of 11.3% (FY2025 adjusted) still trails RBC by ~550 basis points. The gap is not about top-line generation&mdash;it&rsquo;s about the <strong>cost and composition of the workforce</strong> deployed to generate that revenue.</p>
+
+  <div class="kpi-strip">
+    <div class="kpi danger"><div class="num">11.3%</div><div class="lbl">BMO Adj. ROE</div><div class="sub">FY2025</div></div>
+    <div class="kpi"><div class="num">~16.8%</div><div class="lbl">RBC Adj. ROE</div><div class="sub">FY2025</div></div>
+    <div class="kpi danger"><div class="num">~550bp</div><div class="lbl">Gap to RBC</div><div class="sub">Widest among peers</div></div>
+    <div class="kpi"><div class="num">12%</div><div class="lbl">BMO Rev Growth</div><div class="sub">FY2025 Adjusted</div></div>
+    <div class="kpi danger"><div class="num">~33%</div><div class="lbl">BMO Est. TOCA</div><div class="sub">Highest of Big 6</div></div>
+    <div class="kpi"><div class="num">56.3%</div><div class="lbl">Efficiency Ratio</div><div class="sub">FY2025, improved 200bp</div></div>
+  </div>
+
+  <p>This research identifies <strong>seven major workforce-related domains</strong> where publicly available data suggests potential contributors to this performance differential. These are organized from highest available evidence to most inferential, and are intended to frame hypotheses for internal validation using BMO&rsquo;s proprietary workforce data.</p>
+</section>
+
+<!-- ═══════════ 2. FINANCIAL CONTEXT ═══════════ -->
+<section id="financial">
+  <div class="section-label">Financial Context</div>
+  <h2>The Revenue &amp; ROE Gap</h2>
+  <p class="lead">BMO&rsquo;s adjusted revenue growth is competitive, but its ROE lags RBC by ~550 bps and CIBC by ~300&ndash;400 bps. This suggests the gap is less about top-line generation and more about the efficiency with which human capital converts activity into shareholder returns.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="text-align:left">Bank</th><th>Q4 FY25 Rev Growth</th><th>FY25 Adj. ROE</th><th>FY25 Adj. EPS Growth</th><th>Efficiency Ratio</th></tr></thead>
+      <tbody>
+        <tr><td class="left">RBC</td><td>~14% YoY</td><td class="cell-good">~16.8%</td><td>~25% YoY</td><td>~53&ndash;54%</td></tr>
+        <tr><td class="left">TD</td><td>~7.6% adj.</td><td>~12.8%</td><td>~27% adj.</td><td>~55%</td></tr>
+        <tr><td class="left">CIBC</td><td>~14%</td><td>~14&ndash;15%</td><td>~16%</td><td>~55%</td></tr>
+        <tr><td class="left">Scotiabank</td><td>~15%</td><td class="cell-alert">~11%</td><td>~35% adj.</td><td>~59%</td></tr>
+        <tr class="row-bmo"><td class="left">BMO</td><td>~4% rpt / ~12% adj.</td><td class="cell-alert">11.3%</td><td>~26% adj.</td><td>56.3%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h3>Adjusted ROE Comparison (%)</h3>
+      <canvas id="cROE"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Revenue Per Employee ($K CAD)</h3>
+      <canvas id="cRevEmp"></canvas>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="text-align:left">Bank</th><th>Approx. FTE (FY25)</th><th>Approx. Annual Rev (CAD)</th><th>Rev/Employee Approx.</th></tr></thead>
+      <tbody>
+        <tr class="row-bmo"><td class="left">BMO</td><td>~53,200</td><td>~$35B</td><td class="cell-good">~$658K</td></tr>
+        <tr><td class="left">RBC</td><td>~96,000</td><td>~$62B</td><td>~$646K</td></tr>
+        <tr><td class="left">TD</td><td>~95,000+</td><td>~$58B</td><td>~$611K</td></tr>
+        <tr><td class="left">CIBC</td><td>~49,000</td><td>~$28B</td><td>~$571K</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-gold">
+    <strong>Revenue/Employee is Not the Issue</strong>
+    BMO&rsquo;s revenue per employee (~$658K) is actually the highest among the Big 4 with available data. This suggests the ROE gap is driven not by aggregate headcount excess but by <em>workforce mix, deployment patterns, and conversion efficiency</em> within the headcount.
+  </div>
+</section>
+
+<!-- ═══════════ 3. TOCA COMPOSITION ═══════════ -->
+<section id="toca">
+  <div class="section-label">Workforce Composition</div>
+  <h2>TOCA vs LOB: Revenue-Producing vs Support Roles</h2>
+  <p class="lead">No Big 6 bank publicly discloses a TOCA vs LOB headcount split. Using a Fermi estimation approach&mdash;triangulating corporate segment expenses, technology spending, and industry benchmarks&mdash;BMO&rsquo;s estimated non-revenue-producing headcount (Technology, Operations, Corporate Areas) emerges as the highest among peers.</p>
+
+  <div class="kpi-strip">
+    <div class="kpi danger"><div class="num">~33%</div><div class="lbl">BMO Est. TOCA</div><div class="sub">Highest of Big 6</div></div>
+    <div class="kpi"><div class="num">~28%</div><div class="lbl">Peer Median</div><div class="sub">RBC / CIBC range</div></div>
+    <div class="kpi danger"><div class="num">2.0:1</div><div class="lbl">BMO LOB:TOCA</div><div class="sub">vs 2.6:1 at RBC</div></div>
+    <div class="kpi"><div class="num">32.6%</div><div class="lbl">Corp Svc NIE</div><div class="sub">$5.57B of $17.1B</div></div>
+    <div class="kpi"><div class="num">~$370M</div><div class="lbl">Potential Savings</div><div class="sub">Pre-tax, at 28% TOCA</div></div>
+    <div class="kpi"><div class="num">$1,567K</div><div class="lbl">Rev / LOB FTE</div><div class="sub">Best in class</div></div>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h3>Estimated TOCA % of Total FTE</h3>
+      <canvas id="cTocaPct"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>LOB vs TOCA Headcount Split</h3>
+      <canvas id="cStacked"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Revenue per LOB FTE ($K CAD)</h3>
+      <canvas id="cRevLOB"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>LOB:TOCA Ratio vs Adjusted ROE</h3>
+      <canvas id="cScatter"></canvas>
+    </div>
+  </div>
+
+  <div class="callout callout-green">
+    <strong>BMO&rsquo;s LOB Productivity is Actually the Strongest</strong>
+    At $1,567K revenue per LOB FTE, BMO leads all peers. The issue isn&rsquo;t that LOB staff underperform&mdash;it&rsquo;s that the TOCA overhead dilutes this advantage when measured on a total-FTE basis.
+  </div>
+
+  <details>
+    <summary>Fermi Estimation Methodology (3 Methods)</summary>
+    <div class="inner">
+      <p><strong>Method 1 &mdash; Corporate Segment NIE Proxy:</strong> Each bank&rsquo;s &ldquo;Corporate/Other&rdquo; NIE &divide; Total NIE, normalized for allocation differences (BMO retains most T&O costs in Corporate Services; peers allocate to LOBs).</p>
+      <p><strong>Method 2 &mdash; Technology Spending Anchor:</strong> Where tech spend is known, estimate tech headcount (Spend &times; 65% labor share &divide; avg compensation), then gross up &times;1.4 for full TOCA.</p>
+      <p><strong>Method 3 &mdash; Industry Benchmarks:</strong> Large universal banks: 28&ndash;38% support staff (McKinsey, Accenture, Oliver Wyman). Positioned each bank by complexity, M&A status, tech intensity.</p>
+      <p><strong>All estimates carry &plusmn;3&ndash;5 pp uncertainty.</strong></p>
+    </div>
+  </details>
+</section>
+
+<!-- ═══════════ 4. HEADCOUNT & BOW ═══════════ -->
+<section id="headcount">
+  <div class="section-label">Headcount Dynamics</div>
+  <h2>Bank of the West: The Integration Tail</h2>
+  <p class="lead">BMO&rsquo;s $16.3B acquisition of Bank of the West (Feb 2023) was transformational&mdash;doubling the U.S. footprint and adding ~9,300 employees. While the technology conversion won Celent&rsquo;s 2024 Model Bank award, the workforce integration has been a longer tail.</p>
+
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h3>BMO Headcount Trajectory (FY2022&ndash;FY2025)</h3>
+      <canvas id="cHCTrend"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Year-over-Year Headcount Change (%)</h3>
+      <canvas id="cYoY"></canvas>
+    </div>
+  </div>
+
+  <div class="quad-grid">
+    <div class="callout callout-red" style="margin:0">
+      <strong>Integration Staffing Overhead</strong>
+      Back-office, operations, compliance, and technology integration required maintaining duplicate staffing through much of 2023&ndash;2024. Headcount reductions of ~4.3% in FY2024 and ~0.7% in FY2025 are largely normalization of post-acquisition bloat.
+    </div>
+    <div class="callout callout-red" style="margin:0">
+      <strong>U.S. Loan Balances Declining</strong>
+      In Q4 FY2025, U.S. loan balances fell 2% and deposits were down 5% as BMO pruned its U.S. portfolio&mdash;exiting RV loans, indirect auto, franchise lending, and lower-return credit cards. The workforce supports a shrinking asset base.
+    </div>
+    <div class="callout callout-gold" style="margin:0">
+      <strong>Branch Divestitures Underway</strong>
+      BMO announced the sale of 138 branches in select U.S. markets, with a $102M goodwill write-down in Q4 2025. Geographic rationalization of the physical footprint&mdash;and associated staff&mdash;is still in progress.
+    </div>
+    <div class="callout callout-green" style="margin:0">
+      <strong>Revenue Hire Ramp-Up</strong>
+      BMO has hired 100+ commercial bankers and private advisors in the past 12 months. These hires need 12&ndash;18 months to build relationships; meaningful loan growth expected by Q2/Q3 2026. This signals recognition of underinvestment in front-line revenue capacity.
+    </div>
+  </div>
+
+  <div class="callout callout-blue">
+    <strong>Hypothesis: Revenue-Producing Role Ratio is Temporarily Skewed</strong>
+    Using internal workforce data, analyze the ratio of &ldquo;Revenue-Producing Roles&rdquo; (relationship managers, commercial bankers, wealth advisors, capital markets professionals) to &ldquo;Revenue-Support Roles&rdquo; (operations, compliance, technology, HR, finance) over FY2022&ndash;FY2025. The hypothesis is that BMO&rsquo;s ratio has been temporarily skewed toward support roles due to integration demands.
+  </div>
+</section>
+
+<!-- ═══════════ 5. TURNOVER ═══════════ -->
+<section id="turnover">
+  <div class="section-label">Workforce Dynamics</div>
+  <h2>Employee Turnover Benchmarking</h2>
+  <p class="lead">Extracted from FY2024 sustainability reports. BMO&rsquo;s total turnover (16.6%) is the second-highest among the Big 6, with a pronounced geographic disparity between Canada and U.S. operations.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th style="text-align:left">Bank</th><th>Total Turnover</th><th>Voluntary</th><th>Involuntary</th><th>CA Voluntary</th><th>US Voluntary</th><th>US Involuntary</th><th>Total FTEs</th></tr>
+      </thead>
+      <tbody>
+        <tr class="row-bmo"><td class="left">BMO</td><td class="cell-hl">16.6%</td><td>10.6%</td><td>6.0%</td><td>9.8%</td><td class="cell-alert">12.2%</td><td class="cell-alert">10.3%</td><td>57,060</td></tr>
+        <tr><td class="left">RBC</td><td>11.8%</td><td>9.5%</td><td>2.3%</td><td>9.9%</td><td>N/D*</td><td>N/D</td><td>98,588</td></tr>
+        <tr><td class="left">TD</td><td>15.0%</td><td>~10.5%</td><td>~3.6%</td><td>10.1%</td><td class="cell-alert">11.4%</td><td>5.1%</td><td>103,150</td></tr>
+        <tr><td class="left">CIBC</td><td>11.8%</td><td class="cell-good">7.7%</td><td>N/D</td><td>N/D</td><td>N/D</td><td>N/D</td><td>48,000</td></tr>
+        <tr><td class="left">BNS</td><td class="cell-alert">17.5%</td><td>10.0%</td><td>~7.5%</td><td>N/D</td><td>N/D</td><td>N/D</td><td>82,590</td></tr>
+        <tr><td class="left">NA</td><td colspan="6" style="color:var(--gray-400);font-style:italic">Turnover rates not disclosed; 58% have 5+ years tenure</td><td>31,303</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:.75rem;color:var(--gray-400)">* RBC groups US with UK and other international geographies. Excludes City National Bank &amp; RBC Brewin Dolphin.</p>
+
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h3>Total Turnover Rate by Bank (FY2024)</h3>
+      <canvas id="chartTurnover"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Canada vs US: Voluntary &amp; Involuntary</h3>
+      <canvas id="chartGeo"></canvas>
+    </div>
+  </div>
+
+  <div class="callout callout-red">
+    <strong>Key Finding: US Operations Drive Higher Turnover</strong>
+    BMO&rsquo;s US voluntary turnover (12.2%) runs 24% higher than Canada (9.8%). US involuntary turnover (10.3%) is nearly 3&times; the Canadian rate (3.5%). TD shows a similar pattern: 11.4% US vs 10.1% Canada voluntary. Higher turnover drives recruiting costs, training investment, productivity loss during ramp-up periods, and institutional knowledge attrition.
+  </div>
+</section>
+
+<!-- ═══════════ 6. US EXPOSURE ═══════════ -->
+<section id="us-exposure">
+  <div class="section-label">US Concentration</div>
+  <h2>US Revenue &amp; The Cost-to-Serve Thesis</h2>
+  <p class="lead">BMO and TD are clear outliers among the Big 6 in US exposure. This is potentially a stronger explanatory variable for BMO&rsquo;s higher TOCA ratio than pure organizational bloat.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th style="text-align:left">Bank</th><th>US Employees</th><th>US % of Workforce</th><th>Est. US Earnings %</th><th>Primary US Presence</th></tr>
+      </thead>
+      <tbody>
+        <tr class="row-bmo"><td class="left">BMO</td><td class="cell-hl">19,621</td><td class="cell-hl">34.4%</td><td class="cell-alert">~30&ndash;35%</td><td class="left">Full retail bank (Bank of the West), US P&amp;C segment</td></tr>
+        <tr><td class="left">TD</td><td class="cell-hl">31,054</td><td class="cell-hl">30.1%</td><td class="cell-alert">~25&ndash;30%</td><td class="left">TD Bank N.A. (1,171+ branches, 16 states)</td></tr>
+        <tr><td class="left">RBC</td><td>16,101</td><td>16.3%</td><td>~10&ndash;15%</td><td class="left">City National Bank (CA), US wealth management</td></tr>
+        <tr><td class="left">CIBC</td><td>N/D</td><td>N/D</td><td>~7%</td><td class="left">US Commercial Banking &amp; Wealth Management</td></tr>
+        <tr><td class="left">BNS</td><td>N/D</td><td>N/D</td><td>~3&ndash;5%</td><td class="left">Limited US; International = LatAm/Caribbean</td></tr>
+        <tr><td class="left">NA</td><td>~minimal</td><td>&lt;1%</td><td>&lt;2%</td><td class="left">4 branches in Florida; predominantly Quebec</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h3>US Workforce Share vs Estimated US Earnings Share</h3>
+      <canvas id="chartUSExposure"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>US Exposure vs Total Turnover Rate</h3>
+      <canvas id="chartUSvsTurnover"></canvas>
+    </div>
+  </div>
+
+  <p>If approximately 30&ndash;35% of BMO&rsquo;s business is in the US, and US operations require 1.3&ndash;1.5&times; the compliance and support infrastructure per revenue dollar compared to Canadian operations, that alone could explain a significant portion of the TOCA gap versus peers like RBC, CIBC, and National Bank who have minimal US retail banking exposure.</p>
+
+  <div class="quad-grid">
+    <div class="callout callout-red" style="margin:0">
+      <strong>Regulatory Overhead</strong>
+      US regulatory compliance costs (Dodd-Frank, CFPB, OCC, FDIC, state-level, BSA/AML) are significantly more prescriptive than OSFI/Canadian regulation. Foreign banks with &gt;$100B in US assets must maintain a US Intermediate Holding Company (IHC) with its own capital, liquidity, and stress testing requirements.
+    </div>
+    <div class="callout callout-red" style="margin:0">
+      <strong>Higher US Voluntary Turnover</strong>
+      BMO data shows US voluntary turnover at 12.2% vs 9.8% in Canada&mdash;a 24% premium. TD shows a similar pattern: 11.4% US vs 10.1% Canada. Higher turnover drives recurring recruiting costs, training investment, productivity loss, and knowledge attrition.
+    </div>
+    <div class="callout callout-red" style="margin:0">
+      <strong>US Compensation Premiums</strong>
+      US banking salaries run materially higher than Canadian equivalents, especially in technology and compliance. The Bank of the West footprint (California, Colorado) carries some of the highest labor costs in North America.
+    </div>
+    <div class="callout callout-red" style="margin:0">
+      <strong>Duplicate Infrastructure</strong>
+      US operations require separate risk management, compliance, legal, technology, and operational functions. This creates a structural floor on non-revenue-producing headcount that purely domestic banks do not carry.
+    </div>
+  </div>
+
+  <div class="callout callout-blue">
+    <strong>Enhanced Prudential Standards (EPS) &mdash; The Hidden Multiplier</strong>
+    Foreign Banking Organizations (FBOs) with &gt;$100B in US total consolidated assets must establish a US Intermediate Holding Company (IHC) subject to separate US capital requirements, US liquidity requirements (LCR), US stress testing (CCAR/DFAST), US resolution planning, and US risk management standards&mdash;all separate from and in addition to Canadian OSFI requirements. This is effectively a mandate to build a <em>second bank-within-a-bank</em>, with its own governance, risk, and compliance apparatus. Both BMO and TD exceed this threshold.
+  </div>
+
+  <p>TD&rsquo;s $4.2B AML enforcement penalty in 2024 illustrates the extreme tail risk of US operations when compliance infrastructure proves inadequate. This event alone consumed approximately 47% of TD&rsquo;s FY2024 reported net income and triggered a 10% US asset cap&mdash;a regulatory constraint with no equivalent in the Canadian framework.</p>
+
+  <details>
+    <summary>Quantifying the US Cost-to-Serve Effect</summary>
+    <div class="inner">
+      <p><strong>What this means:</strong> A portion of BMO&rsquo;s elevated Corporate Services NIE (32.6% of total, vs peer range of 16&ndash;25%) is likely structural&mdash;driven by the regulatory and operational requirements of running a large US retail bank&mdash;rather than purely attributable to organizational inefficiency.</p>
+      <p><strong>Estimating the effect:</strong> If US operations require ~1.4&times; the support cost per revenue dollar (conservative given duplicate infrastructure, higher turnover, and EPS compliance), and BMO derives ~33% of revenue from the US, that implies ~4.6 percentage points of incremental TOCA burden (33% &times; 0.4 &times; ~35% base TOCA rate). This alone narrows the gap between BMO and domestically-focused peers significantly.</p>
+      <p><strong>What remains unexplained:</strong> Even adjusting for US structural costs, BMO&rsquo;s overhead appears elevated. The Bank of the West integration contributed transitional overhead that should normalize. The remaining gap may reflect genuine optimization opportunity&mdash;but the size of that opportunity is smaller than the raw TOCA comparison suggests.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ═══════════ 7. EFFICIENCY ═══════════ -->
+<section id="efficiency">
+  <div class="section-label">Operating Leverage</div>
+  <h2>Efficiency Ratio &amp; NIE Decomposition</h2>
+  <p class="lead">BMO&rsquo;s adjusted efficiency ratio improved from 58.3% in FY2024 to 56.3% in FY2025&mdash;a meaningful 200+ bps improvement with 4.3% adjusted operating leverage. But it still trails RBC&rsquo;s low-to-mid 50s.</p>
+
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h3>Adjusted Efficiency Ratio (%)</h3>
+      <canvas id="cEfficiency"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>NIE Cost Drivers (BMO)</h3>
+      <canvas id="cNIE"></canvas>
+    </div>
+  </div>
+
+  <div class="quad-grid">
+    <div class="callout callout-gold" style="margin:0">
+      <strong>Performance-Based Compensation</strong>
+      Higher variable comp in capital markets and wealth management, expected in strong revenue quarters but compresses the efficiency ratio.
+    </div>
+    <div class="callout callout-gold" style="margin:0">
+      <strong>Technology &amp; Operations Costs</strong>
+      Running dual systems during and after integration, plus ongoing SAP S/4HANA migration, cloud infrastructure, and AI capabilities. ~$1.3B invested in digital transformation over 2023&ndash;2024.
+    </div>
+    <div class="callout callout-red" style="margin:0">
+      <strong>Severance Charges</strong>
+      $202M pre-tax in Q1 2026 alone (~700 positions). Efficiency gains are being purchased at the cost of ongoing separation charges, which depress near-term ROE.
+    </div>
+    <div class="callout callout-gold" style="margin:0">
+      <strong>Acquisition-Related Intangibles</strong>
+      $96M pre-tax amortization in Q1 2026 representing the tail of Bank of the West and Burgundy acquisition costs.
+    </div>
+  </div>
+
+  <div class="callout callout-blue">
+    <strong>Hypothesis: NIE Decomposition</strong>
+    Decompose non-interest expense growth into workforce components: base salaries, performance comp, benefits, severance/restructuring, and contractor/consulting spend. Trend each FY2022&ndash;FY2025 as a share of total NIE and as a ratio to revenue. Identify which component is most responsible for the efficiency gap vs. peer benchmarks.
+  </div>
+</section>
+
+<!-- ═══════════ 8. DIGITAL ═══════════ -->
+<section id="digital">
+  <div class="section-label">Digital Transformation</div>
+  <h2>Digital Investment &amp; Workforce Displacement</h2>
+  <p class="lead">BMO has positioned itself as a &ldquo;Digital-First, AI-powered&rdquo; institution. The critical question is whether these investments are translating into measurable displacement of non-revenue-producing roles.</p>
+
+  <div class="kpi-strip">
+    <div class="kpi"><div class="num">7.2M+</div><div class="lbl">Active Digital Users</div><div class="sub">~12% YoY growth</div></div>
+    <div class="kpi"><div class="num">2.5M+</div><div class="lbl">Chatbot Interactions</div><div class="sub">BMO Assist, 260 topics</div></div>
+    <div class="kpi"><div class="num">260M+</div><div class="lbl">AI-Powered Insights</div><div class="sub">Delivered to customers FY2025</div></div>
+    <div class="kpi"><div class="num">~$1.3B</div><div class="lbl">Digital Investment</div><div class="sub">Over 2023&ndash;2024</div></div>
+  </div>
+
+  <p>Across the industry, Canadian banks are following a clear pattern: invest in digital and AI capabilities, reduce transactional/operational headcount, and redeploy capacity toward revenue-generating roles.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="text-align:left">Bank</th><th style="text-align:left">Recent Workforce Action</th><th style="text-align:left">Context</th></tr></thead>
+      <tbody>
+        <tr><td class="left">TD</td><td class="left">Cut ~3,000+ positions (~3% of workforce)</td><td class="left">Late 2023; coupled with AML/governance investments</td></tr>
+        <tr><td class="left">CIBC</td><td class="left">Reduced ~2,400 positions (~5% of FTEs)</td><td class="left">FY2024; reinvesting in cap markets &amp; US commercial</td></tr>
+        <tr><td class="left">RBC</td><td class="left">Eliminated ~30 senior exec positions</td><td class="left">Post-HSBC acquisition restructuring; targeting ~$740M synergies</td></tr>
+        <tr><td class="left">BNS</td><td class="left">Multi-thousand-person reductions</td><td class="left">Last 18 months under CEO Scott Thomson repositioning</td></tr>
+        <tr class="row-bmo"><td class="left">BMO</td><td class="left">~700 positions (Q1 2026, $202M charge)</td><td class="left">Ongoing BoW integration normalization</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-blue">
+    <strong>Hypothesis: Digital Displacement Rate</strong>
+    Track the ratio of non-revenue roles eliminated (through digital/AI automation) to non-revenue roles added or maintained. Calculate for each business segment. Then: are eliminated roles being net-redeployed into revenue-producing roles, or simply eliminated for cost savings? The ROE math depends heavily on the answer.
+  </div>
+
+  <div class="callout callout-gold">
+    <strong>Industry Trend: Rising Average Wage</strong>
+    Despite branch closures and operational staff reductions, the average wage in Canadian banking is increasing because lower-skilled transactional roles are being replaced by higher-skilled analytical, advisory, and technical staff. This is the workforce mix shift in action.
+  </div>
+</section>
+
+<!-- ═══════════ 9. HYPOTHESES ═══════════ -->
+<section id="hypotheses">
+  <div class="section-label">Synthesis</div>
+  <h2>Ranked Workforce Hypotheses</h2>
+  <p class="lead">The primary workforce hypotheses, in order of likely impact, based on available evidence:</p>
+
+  <ol class="hypothesis-list">
+    <li><strong>Post-Acquisition Workforce Normalization Lag</strong> &mdash; Bank of the West integration creating temporary support-role bloat and ongoing severance charges. The headcount reductions of ~4.3% in FY2024 and ~0.7% in FY2025 are normalization, but the process is incomplete.</li>
+    <li><strong>U.S. Banking Workforce Productivity Deficit</strong> &mdash; Shrinking U.S. loan book + divesting branches + new banker ramp = temporary revenue/employee depression. U.S. Banking ROE improved 170 bps to 8.1% in FY2025 but remains well below corporate targets.</li>
+    <li><strong>Incomplete Digital-to-Headcount Conversion</strong> &mdash; Strong digital investment (~$1.3B over 2023&ndash;2024) not yet fully reflected in non-revenue role displacement or revenue redeployment. AI tools deployed but efficiency gains depend on adoption rates.</li>
+    <li><strong>Dual-Jurisdiction Regulatory Staffing Overhead</strong> &mdash; OSFI + OCC/FDIC compliance requirements consuming disproportionate non-revenue headcount. Enhanced Prudential Standards mandate a &ldquo;bank-within-a-bank&rdquo; for the US operations.</li>
+    <li><strong>Geographic Cost Structure Inherited from Bank of the West</strong> &mdash; California/Colorado premium labor costs diluting U.S. segment efficiency. Bay Area layoffs and 138-branch divestiture signal ongoing geographic cost optimization.</li>
+  </ol>
+
+  <h3 style="margin-top:2rem">Recommended Internal Research Agenda</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th style="text-align:left">Analysis</th><th style="text-align:left">Key Metric</th><th style="text-align:left">Expected Insight</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td class="left">Revenue-producing vs. support role ratio, by segment, FY2022&ndash;FY2025</td><td class="left">RP:NRP ratio trended</td><td class="left">Quantify mix shift from BoW integration and recovery trajectory</td></tr>
+        <tr><td>2</td><td class="left">NIE decomposition by workforce component</td><td class="left">Comp, benefits, severance, contractor % of NIE</td><td class="left">Identify which labor cost category drives efficiency gap</td></tr>
+        <tr><td>3</td><td class="left">Digital displacement rate by role family</td><td class="left">Roles eliminated by automation / roles maintained</td><td class="left">Measure actual workforce leverage from digital investment</td></tr>
+        <tr><td>4</td><td class="left">Voluntary turnover: revenue-producing vs. support, by segment</td><td class="left">Turnover rate, cost per departure, time-to-fill</td><td class="left">Identify revenue-capacity leakage from attrition</td></tr>
+        <tr><td>5</td><td class="left">U.S. Banking workforce productivity analysis</td><td class="left">Revenue/FTE, loans/banker, deposits/advisor</td><td class="left">Benchmark U.S. segment against Canadian P&amp;C per capita</td></tr>
+        <tr><td>6</td><td class="left">Internal mobility rate pre/post acquisition</td><td class="left">Lateral moves + promotions as % of headcount</td><td class="left">Assess organizational velocity/agility</td></tr>
+        <tr><td>7</td><td class="left">AI/digital adoption by segment and role</td><td class="left">Tool usage rates, productivity lift per tool</td><td class="left">Connect digital investment to measurable workforce efficiency</td></tr>
+        <tr><td>8</td><td class="left">Geographic compensation arbitrage analysis</td><td class="left">Cost/FTE and Rev/FTE by market</td><td class="left">Identify highest-leverage geographic rebalancing opportunities</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <details>
+    <summary>Additional Workforce Factors for Investigation</summary>
+    <div class="inner">
+      <p><strong>Turnover &amp; Retention:</strong> Industry-wide attrition in operational and technology roles has been elevated due to competition from fintechs, tech companies, and consulting firms. High turnover creates productivity drag and recurring recruitment/training costs. The BMORE program (skills-based hiring in Chicago/Milwaukee) noted retention challenges, investing in mentorship to improve outcomes.</p>
+      <p><strong>Workforce Aging &amp; Tenure:</strong> Bank of the West brought a legacy workforce with different tenure profiles. Longer-tenured employees in non-revenue roles may have higher costs but lower adaptability to digital transformation. Conversely, experienced relationship managers who departed during integration uncertainty represent direct revenue capacity loss.</p>
+      <p><strong>Time-in-Position &amp; Internal Mobility:</strong> Post-acquisition integration often creates organizational paralysis&mdash;employees frozen in current roles awaiting org structure clarity. This depresses internal mobility rates, a leading indicator of engagement and the ability to redeploy talent from support to revenue roles.</p>
+      <p><strong>Digital Adoption &amp; AI Readiness:</strong> BMO&rsquo;s AI tools (Lumi, Rover, BMO Assist) are deployed, but efficiency gains depend on employee adoption rates. Legacy systems in the U.S. segment and different digital maturity among former BoW staff can limit real-world impact.</p>
+      <p><strong>Location-Based Cost &amp; Productivity:</strong> The BoW footprint (California, Colorado, western U.S.) carries premium labor costs. San Francisco Bay Area staff command premium compensation. BMO&rsquo;s post-acquisition layoffs (228 employees in Bay Area per WARN filings) and branch divestiture suggest ongoing geographic cost optimization.</p>
+      <p><strong>Regulatory &amp; Compliance Staffing Burden:</strong> Operating under both OSFI (Canada) and OCC (U.S.) imposes dual compliance staffing. FDIC special assessments, OSFI B-15 climate risk guidelines, and E-21 operational resilience requirements all demand non-revenue headcount.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ═══════════ 10. DOWNLOADS ═══════════ -->
+<section id="downloads">
+  <div class="section-label">Downloads</div>
+  <h2>Supporting Documents</h2>
+  <div class="doc-cards">
+    <a class="doc-card" href="./docs/BMO_Comprehensive_Workforce_Briefing.docx">
+      <div class="doc-icon docx">W</div>
+      <div class="doc-info">
+        <div class="name">Comprehensive Workforce Briefing (.docx)</div>
+        <div class="desc">Full analysis: financial context, TOCA composition, turnover, US exposure, hypothesis framework</div>
+      </div>
+    </a>
+    <a class="doc-card" href="./docs/Canadian_Big6_TOCA_Analysis_Report.docx">
+      <div class="doc-icon docx">W</div>
+      <div class="doc-info">
+        <div class="name">TOCA vs LOB Analysis Report (.docx)</div>
+        <div class="desc">Original Fermi estimation analysis with methodology and recommendations</div>
+      </div>
+    </a>
+    <a class="doc-card" href="./docs/Canadian_Big6_TOCA_Fermi_Analysis.xlsx">
+      <div class="doc-icon xlsx">X</div>
+      <div class="doc-info">
+        <div class="name">Fermi Estimation Workbook (.xlsx)</div>
+        <div class="desc">6-sheet Excel model with segment NIE data, three estimation methods, and source tracking</div>
+      </div>
+    </a>
+    <a class="doc-card" href="./docs/Workforce_Dynamics_US_Exposure_Report.docx">
+      <div class="doc-icon docx">W</div>
+      <div class="doc-info">
+        <div class="name">Workforce Dynamics &amp; US Exposure (.docx)</div>
+        <div class="desc">Turnover benchmarking, US revenue concentration, and cost-to-serve thesis</div>
+      </div>
+    </a>
+  </div>
+  <div style="margin-top:1rem">
+    <p style="font-size:.85rem;color:var(--gray-500)">Related dashboards: <a href="index.html" style="color:var(--accent)">TOCA vs LOB Peer Benchmarking</a> &nbsp;|&nbsp; <a href="workforce-dynamics.html" style="color:var(--accent)">Workforce Dynamics &amp; US Exposure</a></p>
+  </div>
+</section>
+
+<!-- ═══════════ 11. SOURCES ═══════════ -->
+<section id="sources">
+  <div class="section-label">References</div>
+  <h2>Data Sources</h2>
+  <div class="source-grid">
+    <div class="source-item"><span class="bank">BMO</span><span>Q4 FY2025 Earnings Release (Dec 4, 2025)</span></div>
+    <div class="source-item"><span class="bank">BMO</span><span>Q1 FY2026 Earnings Release (Feb 25, 2026)</span></div>
+    <div class="source-item"><span class="bank">BMO</span><span>2025 Annual Report &amp; 2024 Annual Report</span></div>
+    <div class="source-item"><span class="bank">BMO</span><span>2024 Talent &amp; Inclusion Supplementary Info</span></div>
+    <div class="source-item"><span class="bank" style="background:#005DA6">RBC</span><span>2024 Annual &amp; Sustainability Reports</span></div>
+    <div class="source-item"><span class="bank" style="background:#34A853">TD</span><span>2024 Sustainability Report &amp; Q4 Earnings</span></div>
+    <div class="source-item"><span class="bank" style="background:#8B0000">CIBC</span><span>2024 Sustainability Report &amp; Q4 Earnings</span></div>
+    <div class="source-item"><span class="bank" style="background:#EC111A">BNS</span><span>2024 Sustainability Report &amp; Q4 Earnings</span></div>
+    <div class="source-item"><span class="bank" style="background:#0066B3">NA</span><span>2024 Sustainability Report &amp; Q4 Earnings</span></div>
+    <div class="source-item"><span class="bank" style="background:#666">IND</span><span>Globe &amp; Mail, American Banker, CSIMarket, MacroTrends, PwC Canada</span></div>
+    <div class="source-item"><span class="bank" style="background:#666">IND</span><span>McKinsey, Accenture, Oliver Wyman banking benchmarks</span></div>
+    <div class="source-item"><span class="bank" style="background:#666">REG</span><span>Bank of Canada WP 2025-1: International Exposure</span></div>
+  </div>
+  <p style="margin-top:1rem;font-size:.82rem;color:var(--gray-400)">All data sourced from publicly available documents as of February 27, 2026. No internal BMO data was used in this analysis.</p>
+</section>
+
+</div>
+
+<footer>
+  <p><strong>WARLAB</strong> &mdash; Prepared by MIA &nbsp;|&nbsp; Classification: <strong>Public</strong> &nbsp;|&nbsp; February 2026</p>
+  <p style="margin-top:.35rem">Based entirely on publicly available information. No internal BMO data was used.<br>Estimates carry &plusmn;3&ndash;5% uncertainty. This is not investment advice.</p>
+</footer>
+
+<!-- ═══════════ CHARTS ═══════════ -->
+<script>
+const B6 = ['BMO','RBC','TD','CIBC','BNS','NA'];
+const B5 = ['BMO','RBC','TD','CIBC','BNS'];
+const Col = {BMO:'#dc2626',RBC:'#2563eb',TD:'#16a34a',CIBC:'#7c3aed',BNS:'#ea580c',NA:'#0891b2'};
+const navy='#0f3460',accent='#2563eb',red='#dc2626',green='#16a34a',gold='#d97706';
+Chart.defaults.font.family = "'Inter',system-ui,sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#4b5563';
+const gOpt = {grid:{color:'rgba(0,0,0,.04)'}};
+
+// ROE Comparison
+new Chart(document.getElementById('cROE'),{type:'bar',data:{labels:['RBC','CIBC','TD','BMO','BNS'],datasets:[{data:[16.8,14.5,12.8,11.3,11.0],backgroundColor:['#2563eb','#7c3aed','#16a34a','#dc2626','#ea580c'],borderRadius:4}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+'%'}}},scales:{y:{min:8,max:18,ticks:{callback:v=>v+'%'},...gOpt}}}});
+
+// Revenue per Employee
+new Chart(document.getElementById('cRevEmp'),{type:'bar',data:{labels:['BMO','RBC','TD','CIBC'],datasets:[{data:[658,646,611,571],backgroundColor:['#dc2626','#2563eb','#16a34a','#7c3aed'],borderRadius:4}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'$'+c.raw+'K'}}},scales:{y:{beginAtZero:false,min:500,ticks:{callback:v=>'$'+v+'K'},...gOpt}}}});
+
+// TOCA %
+new Chart(document.getElementById('cTocaPct'),{type:'bar',data:{labels:B6,datasets:[{data:[33,28,30,27,32,25],backgroundColor:B6.map(b=>Col[b]),borderRadius:4}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'~'+c.raw+'%'}}},scales:{y:{min:20,max:38,ticks:{callback:v=>v+'%'},...gOpt}}}});
+
+// Stacked LOB/TOCA
+new Chart(document.getElementById('cStacked'),{type:'bar',data:{labels:B6,datasets:[
+  {label:'LOB FTE',data:[35667,68283,71533,35443,60172,23477],backgroundColor:accent,borderRadius:2},
+  {label:'TOCA FTE',data:[17567,26555,30657,13109,28316,7826],backgroundColor:red,borderRadius:2}
+]},options:{plugins:{tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw.toLocaleString()}}},scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>(v/1000).toFixed(0)+'K'},...gOpt}}}});
+
+// Rev/LOB
+new Chart(document.getElementById('cRevLOB'),{type:'bar',data:{labels:B6,datasets:[{data:[1567,1445,1234,751,573,890],backgroundColor:B6.map(b=>b==='BMO'?green:'#94a3b8'),borderRadius:4}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'$'+c.raw.toLocaleString()+'K'}}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'$'+v+'K'},...gOpt}}}});
+
+// Scatter LOB:TOCA vs ROE
+new Chart(document.getElementById('cScatter'),{type:'scatter',data:{datasets:B6.map((b,i)=>({label:b,data:[{x:[2.0,2.6,2.3,2.7,2.1,3.0][i],y:[11.3,14.4,13.6,13.7,11.3,15.4][i]}],backgroundColor:Col[b],pointRadius:b==='BMO'?10:7,pointHoverRadius:12}))},options:{plugins:{tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw.x+':1, '+c.raw.y+'% ROE'}}},scales:{x:{title:{display:true,text:'LOB:TOCA Ratio →'},min:1.8,max:3.2,...gOpt},y:{title:{display:true,text:'Adj. ROE (%) →'},min:10,max:16,...gOpt}}}});
+
+// Headcount Trend
+new Chart(document.getElementById('cHCTrend'),{type:'line',data:{labels:['FY2022','FY2023','FY2024','FY2025'],datasets:[
+  {label:'BMO',data:[46722,56000,53597,53234],borderColor:Col.BMO,borderWidth:3,pointRadius:5,tension:.3,fill:false},
+  {label:'RBC',data:[91428,91398,94838,96628],borderColor:Col.RBC,borderWidth:2,pointRadius:3,tension:.3,fill:false},
+  {label:'TD',data:[94945,103257,102190,102218],borderColor:Col.TD,borderWidth:2,pointRadius:3,tension:.3,fill:false},
+  {label:'NA',data:[29509,31243,31303,33200],borderColor:Col.NA,borderWidth:2,pointRadius:3,tension:.3,fill:false}
+]},options:{plugins:{tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.raw?c.raw.toLocaleString():'N/A')}}},scales:{y:{ticks:{callback:v=>(v/1000).toFixed(0)+'K'},...gOpt}}}});
+
+// YoY
+new Chart(document.getElementById('cYoY'),{type:'bar',data:{labels:['FY22→23','FY23→24','FY24→25'],datasets:[
+  {label:'BMO',data:[19.9,-4.3,-0.7],backgroundColor:Col.BMO,borderRadius:3},
+  {label:'RBC',data:[0.0,3.8,1.9],backgroundColor:Col.RBC,borderRadius:3},
+  {label:'TD',data:[8.8,-1.0,0.03],backgroundColor:Col.TD,borderRadius:3},
+  {label:'NA',data:[5.9,0.2,6.1],backgroundColor:Col.NA,borderRadius:3}
+]},options:{plugins:{tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.raw!==null?c.raw+'%':'N/A')}}},scales:{y:{ticks:{callback:v=>v+'%'},...gOpt}}}});
+
+// Turnover
+new Chart(document.getElementById('chartTurnover'),{type:'bar',data:{labels:B5,datasets:[
+  {label:'Voluntary',data:[10.6,9.5,10.5,7.7,10.0],backgroundColor:accent},
+  {label:'Involuntary',data:[6.0,2.3,3.6,4.1,7.5],backgroundColor:red}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{x:{stacked:true},y:{stacked:true,title:{display:true,text:'Turnover Rate (%)'},max:20}}}});
+
+// Geo Turnover
+new Chart(document.getElementById('chartGeo'),{type:'bar',data:{labels:['BMO CA','BMO US','TD CA','TD US'],datasets:[
+  {label:'Voluntary',data:[9.8,12.2,10.1,11.4],backgroundColor:accent},
+  {label:'Involuntary',data:[3.5,10.3,2.8,5.1],backgroundColor:red}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{x:{stacked:true},y:{stacked:true,title:{display:true,text:'Turnover Rate (%)'},max:24}}}});
+
+// US Exposure
+new Chart(document.getElementById('chartUSExposure'),{type:'bar',data:{labels:B6,datasets:[
+  {label:'US Workforce %',data:[34.4,16.3,30.1,null,null,0.5],backgroundColor:accent},
+  {label:'Est. US Earnings %',data:[33,13,28,7,4,1],backgroundColor:gold}
+]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{title:{display:true,text:'Percentage (%)'},max:40}}}});
+
+// US vs Turnover scatter
+new Chart(document.getElementById('chartUSvsTurnover'),{type:'scatter',data:{datasets:[
+  {label:'BMO',data:[{x:33,y:16.6}],backgroundColor:red,pointRadius:10},
+  {label:'TD',data:[{x:28,y:15.0}],backgroundColor:gold,pointRadius:10},
+  {label:'RBC',data:[{x:13,y:11.8}],backgroundColor:accent,pointRadius:10},
+  {label:'CIBC',data:[{x:7,y:11.8}],backgroundColor:green,pointRadius:10},
+  {label:'BNS',data:[{x:4,y:17.5}],backgroundColor:navy,pointRadius:10}
+]},options:{responsive:true,plugins:{legend:{position:'top'},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': US '+ctx.raw.x+'%, Turnover '+ctx.raw.y+'%'}}},scales:{x:{title:{display:true,text:'Estimated US Earnings (%)'},min:0,max:40},y:{title:{display:true,text:'Total Turnover Rate (%)'},min:10,max:20}}}});
+
+// Efficiency Ratio
+new Chart(document.getElementById('cEfficiency'),{type:'bar',data:{labels:['NA','CIBC','RBC','BNS','BMO','TD'],datasets:[{data:[53.1,55.0,53.5,59.0,56.3,55.0],backgroundColor:['#0891b2','#7c3aed','#2563eb','#ea580c','#dc2626','#16a34a'],borderRadius:4}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+'%'}}},scales:{y:{min:50,max:62,ticks:{callback:v=>v+'%'},...gOpt}}}});
+
+// NIE breakdown (conceptual)
+new Chart(document.getElementById('cNIE'),{type:'doughnut',data:{labels:['Performance Comp','Base Salaries & Benefits','Technology & Ops','Severance & Restructuring','Acquisition Intangibles','Other'],datasets:[{data:[22,35,20,8,5,10],backgroundColor:[accent,navy,'#7c3aed',red,gold,'#94a3b8']}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:10}}}}}});
+</script>
+</body>
+</html>
