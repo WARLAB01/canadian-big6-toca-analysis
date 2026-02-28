@@ -8,19 +8,29 @@ An analysis of workforce composition across Canada's Big 6 D-SIB banks, examinin
 
 BMO's estimated TOCA ratio of **~33%** is the highest among Canadian peers (peer median ~28%), implying a LOB:TOCA ratio of **2.0:1** vs RBC's 2.6:1. Reducing TOCA to peer levels would yield ~$370M in annual pre-tax savings (~30–40 bps of ROE).
 
-## Live Dashboard
+## Live Site
 
-Open `index.html` in any browser — it's a self-contained single-file site with no build step required. All Chart.js visualizations render client-side.
+**[https://warlab01.github.io/canadian-big6-toca-analysis/](https://warlab01.github.io/canadian-big6-toca-analysis/)**
 
-**GitHub Pages:** If hosted via GitHub Pages, the dashboard is available at the repo's Pages URL.
+The site contains three interactive dashboards and downloadable documents — no build step required. All Chart.js visualizations render client-side.
+
+## Pages
+
+| Page | Description |
+|------|-------------|
+| [TOCA vs LOB Peer Benchmarking](https://warlab01.github.io/canadian-big6-toca-analysis/) | Original dashboard with 10 visualizations |
+| [Workforce Dynamics & US Exposure](https://warlab01.github.io/canadian-big6-toca-analysis/workforce-dynamics.html) | Turnover, headcount trends, US cost-to-serve thesis |
+| [Comprehensive Briefing](https://warlab01.github.io/canadian-big6-toca-analysis/comprehensive-briefing.html) | Unified analysis — financial context, TOCA, BoW, hypotheses, research agenda |
 
 ## Documents
 
 | File | Description |
 |------|-------------|
-| [`index.html`](index.html) | Interactive dashboard with 10 visualizations |
-| [`docs/Canadian_Big6_TOCA_Analysis_Report.docx`](docs/Canadian_Big6_TOCA_Analysis_Report.docx) | Full Word report (9 sections) |
-| [`docs/Canadian_Big6_TOCA_Fermi_Analysis.xlsx`](docs/Canadian_Big6_TOCA_Fermi_Analysis.xlsx) | Excel workbook with Fermi model (6 sheets) |
+| [Comprehensive Workforce Briefing (.docx)](https://warlab01.github.io/canadian-big6-toca-analysis/docs/BMO_Comprehensive_Workforce_Briefing.docx) | Full unified analysis (11 sections) |
+| [Workforce Analytics Briefing (.pptx)](https://warlab01.github.io/canadian-big6-toca-analysis/docs/BMO_Workforce_Analytics_Briefing.pptx) | 15-slide presentation with charts and hypothesis framework |
+| [TOCA vs LOB Analysis Report (.docx)](https://warlab01.github.io/canadian-big6-toca-analysis/docs/Canadian_Big6_TOCA_Analysis_Report.docx) | Original Fermi estimation report (9 sections) |
+| [Fermi Estimation Workbook (.xlsx)](https://warlab01.github.io/canadian-big6-toca-analysis/docs/Canadian_Big6_TOCA_Fermi_Analysis.xlsx) | Excel model with 3 estimation methods (6 sheets) |
+| [Workforce Dynamics & US Exposure (.docx)](https://warlab01.github.io/canadian-big6-toca-analysis/docs/Workforce_Dynamics_US_Exposure_Report.docx) | Turnover benchmarking and cost-to-serve thesis |
 
 ## Methodology
 
@@ -32,8 +42,8 @@ Three independent Fermi estimation methods were triangulated:
 
 ## Data Sources
 
-All analysis is based on publicly available financial disclosures. No internal BMO data was used. Key sources include Q4 earnings releases, supplementary financial information packages, and annual reports from each bank's investor relations website.
+All analysis is based on publicly available financial disclosures. No internal BMO data was used. Key sources include Q4 earnings releases, supplementary financial information packages, annual reports, and sustainability reports from each bank's investor relations website, plus industry benchmarks from McKinsey, Accenture, Oliver Wyman, and Bank of Canada.
 
 ## Disclaimer
 
-This analysis is based entirely on publicly available information. Estimates carry ±3–5 percentage point uncertainty. This is not investment advice.
+This analysis was produced with the assistance of MIA, an AI-powered research tool. It does not constitute investment, financial, or professional advice. All analysis is based entirely on publicly available information — no internal BMO data was used. Original sources and methodology have been provided so that readers may independently verify the findings. Estimates are approximations and carry ±3–5% uncertainty.
